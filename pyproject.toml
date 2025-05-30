@@ -1,0 +1,31 @@
+[project]
+name = "gcimopt"
+version = "0.1.0"
+description = "Learning efficient goal-conditioned policies by imitating optimal trajectories"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "casadi>=3.7.0",
+    "diffrax>=0.7.0",
+    "equinox>=0.12.2",
+    "gymnasium>=1.1.1",
+    "hydra-core>=1.3.2",
+    "jax[cuda12]>=0.5.0",
+    "jaxadi>=0.4.0",
+    "jaxtyping>=0.3.2",
+    "numpy<2.0.0",
+    "optax>=0.2.4",
+    "panda-gym>=3.0.7",
+    "pathos>=0.3.4",
+    "scikit-learn>=1.6.1",
+    "tensorboard>=2.19.0",
+    "tensorboardx>=2.6.2.2",
+    "urdf2casadi@git+https://github.com/mahaarbo/urdf2casadi",
+]
+
+[dependency-groups]
+dev = [
+    "jupyterlab>=4.3.5",
+    "pre-commit<4.0.0",
+    "reorder-python-imports>=3.14.0",
+]

@@ -1,0 +1,23 @@
+seed: 42
+generate: False
+train: False
+evaluate: False
+experiment:
+  generate:
+    trajectories_dir: data/${experiment.name}
+  train:
+    policy_save_path: policies/${experiment.name}/policy_${experiment.policy_model.name}
+    trajectories_dir: ${experiment.generate.trajectories_dir}
+    tensorboard_dir: tensorboard_runs
+    validation_proportion: 0.1
+    goal_relabeling_augment: True
+  evaluate:
+    trajopt_results_path: eval/${experiment.name}.npy
+    policy_path: ${experiment.train.policy_save_path}.zip
+    policy_model: ${experiment.policy_model}
+    simulation_bound_controls: True
+    simulation_bound_states: False
+    simulation_dt: 0.005
+    simulation_n_samples: 500
+    n_tasks: 2000
+    opt_n_intervals: 50
