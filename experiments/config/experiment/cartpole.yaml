@@ -1,0 +1,15 @@
+name: cartpole
+generate:
+  n_trajectories: 20000
+  n_grid_points: 35
+  n_processes: 5
+train:
+  n_epochs: 300
+  batch_size: 8192
+  adam_lr: 3e-4
+  print_loss_every_n_epochs: 2
+  evaluate_every_n_epochs: 1
+evaluate:
+  simulation_dt: 0.01
+policy_input_dim: 9
+policy_output_dim: 1

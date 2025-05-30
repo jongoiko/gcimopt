@@ -1,0 +1,12 @@
+name: double_integrator
+generate:
+  n_trajectories: 500
+  n_grid_points: 30
+  n_processes: 2
+train:
+  n_epochs: 500
+  batch_size: 8192
+  adam_lr: 5e-4
+  print_loss_every_n_epochs: 20
+policy_input_dim: 4
+policy_output_dim: 1

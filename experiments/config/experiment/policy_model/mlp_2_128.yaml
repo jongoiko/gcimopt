@@ -1,0 +1,8 @@
+name: mlp_2_128
+module:
+  _target_: equinox.nn.MLP
+  in_size: ${experiment.policy_input_dim}
+  out_size: ${experiment.policy_output_dim}
+  width_size: 128
+  depth: 3
+  activation: ${jax_nn:swish}

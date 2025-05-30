@@ -1,0 +1,13 @@
+name: drone2d
+generate:
+  n_trajectories: 20000
+  n_grid_points: 40
+  n_processes: 20
+train:
+  n_epochs: 200
+  batch_size: 8192
+  adam_lr: 1e-4
+  print_loss_every_n_epochs: 2
+  evaluate_every_n_epochs: 1
+policy_input_dim: 12
+policy_output_dim: 2

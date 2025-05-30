@@ -1,0 +1,20 @@
+name: drone3d
+generate:
+  n_trajectories: 20000
+  n_grid_points: 40
+  n_processes: 20
+  fatrop_options:
+    jit: True
+    fatrop:
+      print_level: 0
+      mu_init: 0.01
+train:
+  n_epochs: 12
+  batch_size: 65536
+  adam_lr: 5e-4
+  print_loss_every_n_epochs: 2
+  evaluate_every_n_epochs: 1
+evaluate:
+  fatrop_options: ${experiment.generate.fatrop_options}
+policy_input_dim: 27
+policy_output_dim: 4
