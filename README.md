@@ -105,7 +105,7 @@ python -m experiments.run +experiment=$EXPERIMENT_NAME +experiment/policy_model=
 
 where `$POLICY_ARCH` corresponds to the name of an architecture configuration in `experiments/config/experiment/policy_model`, such as `mlp_2_32`.
 
-We provide a script `train.sh` to train all policies as specified in the thesis report:
+We provide a script `train.sh` to train all policies as specified in the paper:
 
 ```shell
 ./train.sh
@@ -135,7 +135,7 @@ To evaluate a trained policy of a specific architecture for an experiment name, 
 python -m experiments.run +experiment=$EXPERIMENT_NAME +experiment/policy_model=$POLICY_ARCH evaluate=true
 ```
 
-We provide a script `eval.sh` to train all policies as specified in the thesis report:
+We provide a script `eval.sh` to train all policies as specified in the paper:
 
 ```shell
 ./eval.sh
