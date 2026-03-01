@@ -123,6 +123,9 @@ def train_policy(experiment_name: str, exp: Experiment, cfg: DictConfig) -> None
                 relative_opt_errors.mean(),
                 epoch,
             )
+            print(
+                f"Epoch {epoch} success rate {success_rate}%, mean relative cost error {relative_opt_errors.mean()}%"
+            )
 
         epoch_callback = evaluate_callback
         evaluate_every_n_epochs = train_cfg.evaluate_every_n_epochs
