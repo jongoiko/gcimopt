@@ -407,16 +407,19 @@ class Policy:
                 np.asarray(final_state),
                 opt_n_intervals,
             )
-            opt_result = solver(**solver_args)  # type: ignore
-            if solver.stats()["unified_return_status"] == "SOLVER_RET_SUCCESS":
-                optimal_costs[n_optimized_tasks] = opt_result["f"]  # type: ignore
-                initial_states[n_optimized_tasks] = np.asarray(initial_state)
-                goals[n_optimized_tasks] = (
-                    final_state
-                    if ocp.state_to_goal is None
-                    else np.asarray(ocp.state_to_goal(final_state)).ravel()
-                )
-                n_optimized_tasks += 1
+            try:
+                opt_result = solver(**solver_args)  # type: ignore
+                if solver.stats()["unified_return_status"] == "SOLVER_RET_SUCCESS":
+                    optimal_costs[n_optimized_tasks] = opt_result["f"]  # type: ignore
+                    initial_states[n_optimized_tasks] = np.asarray(initial_state)
+                    goals[n_optimized_tasks] = (
+                        final_state
+                        if ocp.state_to_goal is None
+                        else np.asarray(ocp.state_to_goal(final_state)).ravel()
+                    )
+                    n_optimized_tasks += 1
+            except Exception:
+                pass
         if trajopt_results_path is not None and not Path(trajopt_results_path).exists():
             path = Path(trajopt_results_path)
             path.parent.mkdir(parents=True, exist_ok=True)
