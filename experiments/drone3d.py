@@ -168,7 +168,7 @@ def goal_reached(state: jax.Array, goal: jax.Array) -> jax.Array:
             jnp.logical_and(distance <= TOL_DIST, vel_distance <= TOL_VEL),
             jnp.all(angles_diff <= TOL_ANGLES),
         ),
-        angles_dot_diff <= TOL_ANGLES_DOT,
+        jnp.all(angles_dot_diff <= TOL_ANGLES_DOT),
     )
 
 

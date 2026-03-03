@@ -270,12 +270,16 @@ class Policy:
         assert rollouts.ts is not None and rollouts.ys is not None
         times, states = rollouts.ts, rollouts.ys[..., :-1]
         vmap_goal_reached = jax.vmap(goal_reached)
+        num_time_steps = states.shape[1]
         reshaped_goals = jnp.repeat(
-            goals.reshape(goals.shape[0], 1, -1), states.shape[1], axis=1
+            goals.reshape(goals.shape[0], 1, -1), num_time_steps, axis=1
         )
 
         def success(states: jax.Array, goal: jax.Array) -> tuple[jax.Array, jax.Array]:
             reached = vmap_goal_reached(states, goal)
+            assert reached.shape == (num_time_steps,), (
+                "The goal_reached function does not return a single Boolean per state-goal pair; revise its output shape"
+            )  # type: ignore
             return reached.argmax(), jnp.any(reached)  # type: ignore
 
         success_indices, successes = jax.jit(jax.vmap(success))(states, reshaped_goals)
