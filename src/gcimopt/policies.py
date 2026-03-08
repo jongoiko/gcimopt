@@ -278,11 +278,11 @@ class Policy:
         )
 
         def success(states: jax.Array, goal: jax.Array) -> tuple[jax.Array, jax.Array]:
-            reached = vmap_goal_reached(states, goal)
+            reached: jax.Array = vmap_goal_reached(states, goal)  # type: ignore
             assert reached.shape == (num_time_steps,), (
                 "The goal_reached function does not return a single Boolean per state-goal pair; revise its output shape"
             )  # type: ignore
-            return reached.argmax(), jnp.any(reached)  # type: ignore
+            return reached.argmax(), jnp.any(reached)
 
         success_indices, successes = jax.jit(jax.vmap(success))(states, reshaped_goals)
         minimum_success_indices = (times >= min_time).argmax(axis=1)
