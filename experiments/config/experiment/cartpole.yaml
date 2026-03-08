@@ -11,5 +11,7 @@ train:
   evaluate_every_n_epochs: 1
 evaluate:
   simulation_dt: 0.01
+  fatrop_options:
+    jit: True
 policy_input_dim: 9
 policy_output_dim: 1
