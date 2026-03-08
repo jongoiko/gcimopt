@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import datetime
 import shutil
 import tempfile
+import time
 from pathlib import Path
 from typing import Any
 from typing import Callable
@@ -396,6 +398,8 @@ class Policy:
             n_intervals=opt_n_intervals,
             override_fatrop_options=override_fatrop_options,
         )
+        print(f"Generating {n_tasks} optimal trajectories for policy evaluation.")
+        total_gen_time = 0.0
         while n_optimized_tasks < n_tasks:
             initial_state, final_state = sample_initial_final_states(rng)
             ocp._set_initial_final_state_constraint(
@@ -412,7 +416,9 @@ class Policy:
                 opt_n_intervals,
             )
             try:
+                start = time.time()
                 opt_result = solver(**solver_args)  # type: ignore
+                end = time.time()
                 if solver.stats()["unified_return_status"] == "SOLVER_RET_SUCCESS":
                     optimal_costs[n_optimized_tasks] = opt_result["f"]  # type: ignore
                     initial_states[n_optimized_tasks] = np.asarray(initial_state)
@@ -422,8 +428,13 @@ class Policy:
                         else np.asarray(ocp.state_to_goal(final_state)).ravel()
                     )
                     n_optimized_tasks += 1
+                    total_gen_time += end - start
             except Exception:
                 pass
+        print(
+            f"Generating each one of the {n_tasks} optimal trajectories "
+            f" took {datetime.timedelta(seconds=total_gen_time / n_tasks)} on average."
+        )
         if trajopt_results_path is not None and not Path(trajopt_results_path).exists():
             path = Path(trajopt_results_path)
             path.parent.mkdir(parents=True, exist_ok=True)
