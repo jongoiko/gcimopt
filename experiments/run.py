@@ -1,9 +1,11 @@
 import datetime
 import sys
 import time
+import timeit
 
 import hydra
 import jax
+import numpy as np
 from gcimopt.generate import DatasetGenerator
 from gcimopt.policies import Policy
 from gcimopt.trajectory_buffer import TrajectoryBuffer
@@ -168,6 +170,29 @@ def evaluate_policy(exp: Experiment, cfg: DictConfig) -> None:
     print(f"Success rate: {success_rate:.3f}%")
     print(f"Average relative cost error: {relative_opt_errors.mean():.3f}%")
     print(f"Policy evaluation finished in {datetime.timedelta(seconds=end - start)}")
+    initial_state, final_state = exp.sample_initial_final_states(
+        np.random.default_rng(cfg.seed)
+    )
+    initial_state, final_state = np.asarray(initial_state), np.asarray(final_state)
+    goal = (
+        final_state
+        if exp.ocp.state_to_goal is None
+        else np.asarray(exp.ocp.state_to_goal(final_state)).ravel()
+    )
+
+    def time_policy_inference(device: str | None) -> None:
+        policy_func = jax.jit(policy.action_from_state_and_goal, device=device)
+        result = policy_func(initial_state, goal).block_until_ready()
+        eval_times = 1_000_000
+        print(f"Measuring policy inference time on device {result.device}...")
+        inference_time = timeit.timeit(
+            lambda: policy_func(initial_state, goal).block_until_ready(),
+            number=eval_times,
+        )
+        print(f"Policy inference time: {inference_time / eval_times} s")
+
+    time_policy_inference(None)
+    time_policy_inference(jax.devices("cpu")[0])
 
 
 @hydra.main(version_base=None, config_path="config", config_name="config")
