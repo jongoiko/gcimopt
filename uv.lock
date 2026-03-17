@@ -594,6 +594,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "casadi", specifier = ">=3.7.2" },
     { name = "diffrax", specifier = ">=0.7.0" },
     { name = "equinox", specifier = ">=0.13.4" },
     { name = "gymnasium", specifier = ">=1.2.3" },
