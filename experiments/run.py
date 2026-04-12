@@ -170,6 +170,18 @@ def evaluate_policy(exp: Experiment, cfg: DictConfig) -> None:
     print(f"Success rate: {success_rate:.3f}%")
     print(f"Average relative cost error: {relative_opt_errors.mean():.3f}%")
     print(f"Policy evaluation finished in {datetime.timedelta(seconds=end - start)}")
+    # Measure trajectory optimization solve time
+    print()
+    print("Measuring trajectory optimization execution time")
+    policy._sample_tasks_and_optimal_costs(
+        eval_args["ocp"],
+        eval_args["n_tasks"],
+        eval_args["random_seed"],
+        cfg.experiment.generate.n_grid_points,
+        eval_args["sample_initial_final_states"],
+        None,
+        eval_args["override_fatrop_options"],
+    )
     initial_state, final_state = exp.sample_initial_final_states(
         np.random.default_rng(cfg.seed)
     )
