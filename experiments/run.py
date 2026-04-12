@@ -191,7 +191,6 @@ def evaluate_policy(exp: Experiment, cfg: DictConfig) -> None:
         )
         print(f"Policy inference time: {inference_time / eval_times} s")
 
-    time_policy_inference(None)
     time_policy_inference(jax.devices("cpu")[0])
 
 
