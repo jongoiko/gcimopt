@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import datetime
 import shutil
 import tempfile
+import time
 from pathlib import Path
 from typing import Any
 from typing import Callable
@@ -270,13 +272,17 @@ class Policy:
         assert rollouts.ts is not None and rollouts.ys is not None
         times, states = rollouts.ts, rollouts.ys[..., :-1]
         vmap_goal_reached = jax.vmap(goal_reached)
+        num_time_steps = states.shape[1]
         reshaped_goals = jnp.repeat(
-            goals.reshape(goals.shape[0], 1, -1), states.shape[1], axis=1
+            goals.reshape(goals.shape[0], 1, -1), num_time_steps, axis=1
         )
 
         def success(states: jax.Array, goal: jax.Array) -> tuple[jax.Array, jax.Array]:
-            reached = vmap_goal_reached(states, goal)
-            return reached.argmax(), jnp.any(reached)  # type: ignore
+            reached: jax.Array = vmap_goal_reached(states, goal)  # type: ignore
+            assert reached.shape == (num_time_steps,), (
+                "The goal_reached function does not return a single Boolean per state-goal pair; revise its output shape"
+            )  # type: ignore
+            return reached.argmax(), jnp.any(reached)
 
         success_indices, successes = jax.jit(jax.vmap(success))(states, reshaped_goals)
         minimum_success_indices = (times >= min_time).argmax(axis=1)
@@ -392,6 +398,8 @@ class Policy:
             n_intervals=opt_n_intervals,
             override_fatrop_options=override_fatrop_options,
         )
+        print(f"Generating {n_tasks} optimal trajectories for policy evaluation.")
+        total_gen_time = 0.0
         while n_optimized_tasks < n_tasks:
             initial_state, final_state = sample_initial_final_states(rng)
             ocp._set_initial_final_state_constraint(
@@ -407,16 +415,26 @@ class Policy:
                 np.asarray(final_state),
                 opt_n_intervals,
             )
-            opt_result = solver(**solver_args)  # type: ignore
-            if solver.stats()["unified_return_status"] == "SOLVER_RET_SUCCESS":
-                optimal_costs[n_optimized_tasks] = opt_result["f"]  # type: ignore
-                initial_states[n_optimized_tasks] = np.asarray(initial_state)
-                goals[n_optimized_tasks] = (
-                    final_state
-                    if ocp.state_to_goal is None
-                    else np.asarray(ocp.state_to_goal(final_state)).ravel()
-                )
-                n_optimized_tasks += 1
+            try:
+                start = time.time()
+                opt_result = solver(**solver_args)  # type: ignore
+                end = time.time()
+                if solver.stats()["unified_return_status"] == "SOLVER_RET_SUCCESS":
+                    optimal_costs[n_optimized_tasks] = opt_result["f"]  # type: ignore
+                    initial_states[n_optimized_tasks] = np.asarray(initial_state)
+                    goals[n_optimized_tasks] = (
+                        final_state
+                        if ocp.state_to_goal is None
+                        else np.asarray(ocp.state_to_goal(final_state)).ravel()
+                    )
+                    n_optimized_tasks += 1
+                    total_gen_time += end - start
+            except Exception:
+                pass
+        print(
+            f"Generating each one of the {n_tasks} optimal trajectories "
+            f" took {datetime.timedelta(seconds=total_gen_time / n_tasks)} on average."
+        )
         if trajopt_results_path is not None and not Path(trajopt_results_path).exists():
             path = Path(trajopt_results_path)
             path.parent.mkdir(parents=True, exist_ok=True)

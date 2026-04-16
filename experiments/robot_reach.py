@@ -5,10 +5,10 @@ import jax
 import jax.numpy as jnp
 import jaxadi
 import numpy as np
-
-import urdf2casadi.urdfparser as u2c
-from .experiment import Experiment
+import urdf_to_casadi.urdfparser as u2c
 from gcimopt.ocp import OCP
+
+from .experiment import Experiment
 
 location = Path(__file__).parent
 parser = u2c.URDFparser()
