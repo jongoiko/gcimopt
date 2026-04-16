@@ -9,10 +9,10 @@ generate:
       print_level: 0
       mu_init: 0.01
 train:
-  n_epochs: 12
+  n_epochs: 40
   batch_size: 65536
   adam_lr: 5e-4
-  print_loss_every_n_epochs: 2
+  print_loss_every_n_epochs: 1
   evaluate_every_n_epochs: 1
 evaluate:
   fatrop_options: ${experiment.generate.fatrop_options}
