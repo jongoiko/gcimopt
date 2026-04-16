@@ -10,7 +10,7 @@
     <img src="media/method.png" alt="Method diagram" width="70%"/>
 </p>
 
-This repository contains the code necessary to replicate the experiments in the work titled _GCImOpt: Learning efficient goal-conditioned policies by imitating optimal trajectories_, submitted for review to the 8th Annual Learning for Dynamics & Control Conference ([L4DC 2026](https://sites.google.com/usc.edu/l4dc2026/)).
+This repository contains the code necessary to replicate the experiments in the work titled _GCImOpt: Learning efficient goal-conditioned policies by imitating optimal trajectories_, presented in the 8th Annual Learning for Dynamics & Control Conference ([L4DC 2026](https://sites.google.com/usc.edu/l4dc2026/)).
 
 ## Installation
 
