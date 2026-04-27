@@ -4,6 +4,7 @@
 <p align="center">
     Jon Goikoetxea, Jesús F. Palacián
     <br>
+    <a href="https://arxiv.org/abs/2604.22724">[arXiv]</a>
     <a href="https://jongoiko.github.io/gcimopt/">[Project page]</a>
 </p>
 <p align="center">
@@ -300,3 +301,16 @@ python -m experiments.run +experiment=$EXPERIMENT_NAME [options]
 
 where `[options]` may contain `generate=true`, `train=true` and/or `evaluate=true` depending on which step(s) of the method you wish to execute.
 You can also [override](https://hydra.cc/docs/advanced/override_grammar/basic/) the configurations of the YAML file directly from the command line.
+
+## Citation
+
+If you find this work useful, consider citing it as follows:
+
+```
+@article{goikoetxea2026gcimopt,
+  title={{GCImOpt}: Learning efficient goal-conditioned policies by imitating optimal trajectories},
+  author={Goikoetxea, Jon and Palaci{\'{a}}n, Jes{\'{u}}s F.},
+  journal={arXiv preprint arXiv:2604.22724},
+  year={2026}
+}
+```
